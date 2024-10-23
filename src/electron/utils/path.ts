@@ -1,6 +1,6 @@
 import path from "path";
 import { app } from "electron";
-import { DevMode } from "./utils.js";
+import { DevMode } from "./index.js";
 
 /**
  * Specify the directory used by electron based on the environment.

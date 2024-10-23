@@ -2,17 +2,20 @@ import osUtils from "os-utils";
 import fs from "fs";
 import os from "os";
 import { BrowserWindow } from "electron";
+import { IPCSendHandler } from "../utils/index.js";
 
 const POLL_INTERVAL = 500;
 
-const getCPUUsage = () => {
+const getCPUUsage = (): Promise<number> => {
   return new Promise((resolve) => {
     osUtils.cpuUsage(resolve);
   });
 };
+
 const getRAMUsage = () => {
   return 1 - osUtils.freememPercentage();
 };
+
 const getStorageData = () => {
   const stats = fs.statfsSync(process.platform === "win32" ? "C://" : "/"); // Check Disk space
   const total = stats.bsize * stats.blocks; // Size of a single block * used blocks amount
@@ -39,6 +42,7 @@ export const getStaticData = () => {
     },
   };
 };
+
 export const pollResources = (mainWindow: BrowserWindow) =>
   setInterval(async () => {
     const cpuUsage = await getCPUUsage();
@@ -46,7 +50,7 @@ export const pollResources = (mainWindow: BrowserWindow) =>
     const storageUsage = getStorageData();
 
     // Send data to the IPC Event Bus
-    mainWindow.webContents.send("statistics", {
+    IPCSendHandler("statistics", mainWindow.webContents, {
       cpu: cpuUsage,
       ram: ramUsage,
       storage: storageUsage,

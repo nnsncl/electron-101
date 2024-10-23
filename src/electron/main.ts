@@ -1,11 +1,12 @@
-import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import { DevMode } from "./utils.js";
-import { getStaticData, pollResources } from "./resources.js";
-import { getPreloadPath } from "./path.js";
+import { app, BrowserWindow } from "electron";
+
+import { DevMode, IPCMainHandler } from "./utils/index.js";
+import { getPreloadPath } from "./utils/path.js";
+import { getStaticData, pollResources } from "./services/resources.js";
 
 const DEV_PATH = `http://localhost:3141`;
-const PROD_PATH = "/dist-react/index.html";
+const PROD_PATH = "/dist-app/index.html";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -19,7 +20,5 @@ app.on("ready", () => {
     : mainWindow.loadFile(path.join(app.getAppPath(), PROD_PATH));
 
   pollResources(mainWindow);
-  ipcMain.handle("getStaticData", (_event) => {
-    return getStaticData();
-  });
+  IPCMainHandler("getStaticData", () => getStaticData());
 });

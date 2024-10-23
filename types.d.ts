@@ -16,6 +16,11 @@ type OSResources = {
   };
 };
 
+type EventPayloadMapping = {
+  statistics: ResourcesStatistics;
+  getStaticData: OSResources;
+};
+
 interface Window {
   electron: {
     getStaticData: () => Promise<OSResources>;

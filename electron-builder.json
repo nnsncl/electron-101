@@ -1,6 +1,6 @@
 {
   "appId": "com.nu-ni.electron101",
-  "files": ["dist-electron", "dist-react"],
+  "files": ["dist-electron", "dist-app"],
   "icon": "./assets/app-icon.png",
   "extraResources": ["dist-electron/preload.cjs"],
   "mac": {
