@@ -5,6 +5,7 @@ import "./App.css";
 function App() {
   const [deviceStaticDetails, setDeviceStaticDetails] =
     React.useState<OSResources | null>(null);
+
   const [applicationStats, setApplicationStats] =
     React.useState<ResourcesStatistics | null>(null);
   const deferredAppStats = React.useDeferredValue(applicationStats);
