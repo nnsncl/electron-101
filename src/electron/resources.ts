@@ -47,8 +47,8 @@ export const pollResources = (mainWindow: BrowserWindow) =>
 
     // Send data to the IPC Event Bus
     mainWindow.webContents.send("statistics", {
-      cpu: `${cpuUsage}%`,
-      ram: `${ramUsage}%`,
+      cpu: cpuUsage,
+      ram: ramUsage,
       storage: storageUsage,
     });
   }, POLL_INTERVAL);
