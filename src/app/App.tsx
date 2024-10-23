@@ -3,11 +3,24 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = React.useState(0);
+  const [deviceStaticDetails, setDeviceStaticDetails] =
+    React.useState<OSResources | null>(null);
+  const [applicationStats, setApplicationStats] =
+    React.useState<ResourcesStatistics | null>(null);
+  const deferredAppStats = React.useDeferredValue(applicationStats);
 
   React.useEffect(() => {
-    if (window?.electron)
-      window?.electron.subscribeStatistics((stats) => console.log(stats));
+    if (window?.electron) {
+      if (typeof deviceStaticDetails === typeof null) {
+        window?.electron
+          .getStaticData()
+          .then((value) => setDeviceStaticDetails(value));
+      }
+
+      window?.electron.subscribeStatistics((stats) =>
+        setApplicationStats(stats)
+      );
+    }
   }, []);
 
   return (
@@ -18,17 +31,12 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p>CPU usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
+      <p>CPU model:&nbsp;{deviceStaticDetails?.cpu_model}</p>
+      <p>RAM usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
+      <p>Storage usage:&nbsp;{deferredAppStats?.storage?.usage.toFixed(2)}%</p>
+      <p>Storage capacity:&nbsp;{deferredAppStats?.storage?.total}Gb</p>
+      <p>Memory capacity:&nbsp;{deviceStaticDetails?.total_memory?.gb}Gb</p>
     </>
   );
 }
