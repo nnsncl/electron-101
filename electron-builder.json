@@ -2,6 +2,7 @@
   "appId": "com.nu-ni.electron101",
   "files": ["dist-electron", "dist-react"],
   "icon": "./assets/app-icon.png",
+  "extraResources": ["dist-electron/preload.cjs"],
   "mac": {
     "target": "dmg"
   },
