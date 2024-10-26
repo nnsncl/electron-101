@@ -10,7 +10,18 @@ const IPCInvoke = <Key extends keyof EventPayloadMapping>(key: Key) =>
 const IPCOnHandler = <Key extends keyof EventPayloadMapping>(
   key: Key,
   callback: (payload: EventPayloadMapping[Key]) => void
-) => electron.ipcRenderer.on(key, (_event, payload) => callback(payload));
+) => {
+  const callbackFunction = (_event: Electron.IpcRendererEvent, payload: any) =>
+    callback(payload);
+
+  /**
+   * Listen for the Key event and fire callbackFunction once the app subscribes to it;
+   * Once callbackFunction has been executed, return a function that turns off the sub event.
+   * This prevents events payloads to pile up in electron's thread and cause perf issues.
+   */
+  electron.ipcRenderer.on(key, callbackFunction);
+  return () => electron.ipcRenderer.off(key, callbackFunction);
+};
 
 /**
  * This contextBridge is used to link data between electron process and the main window.
@@ -18,7 +29,6 @@ const IPCOnHandler = <Key extends keyof EventPayloadMapping>(
  */
 electron.contextBridge.exposeInMainWorld("electron", {
   getStaticData: () => IPCInvoke("getStaticData"),
-  subscribeStatistics: (callback) => {
-    IPCOnHandler("statistics", (stats) => callback(stats));
-  },
+  subscribeStatistics: (callback) =>
+    IPCOnHandler("statistics", (stats) => callback(stats)),
 } satisfies Window["electron"]);

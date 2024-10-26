@@ -14,15 +14,22 @@ function App() {
 
   React.useEffect(() => {
     if (HAS_ELECTRON_BRIDGE) {
+      /**
+       * subscribeStatistics returns an unsub function after the callback is executed
+       * Since useEffect fires every time an items of its deps array has changed and at every
+       * render, this function will sub -> unsub to the corresponding events automatically
+       */
+
+      const fireThenUnsubGetStats = window?.electron.subscribeStatistics(
+        (stats) => setApplicationStats(stats)
+      );
       if (typeof deviceStaticDetails === typeof null) {
         window?.electron
           .getStaticData()
           .then((value) => setDeviceStaticDetails(value));
       }
 
-      window?.electron.subscribeStatistics((stats) =>
-        setApplicationStats(stats)
-      );
+      return fireThenUnsubGetStats;
     }
   }, []);
 

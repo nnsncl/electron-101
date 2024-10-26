@@ -30,11 +30,14 @@ type EventPayloadMapping = {
 /**
  * Context Bridges
  */
+
+type UnsubscribeEvent = () => void;
+
 interface Window {
   electron: {
     getStaticData: () => Promise<OSResources>;
     subscribeStatistics: (
       callback: (statistics: ResourcesStatistics) => void
-    ) => void;
+    ) => UnsubscribeEvent;
   };
 }
