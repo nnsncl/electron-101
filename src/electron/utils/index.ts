@@ -1,5 +1,6 @@
 import path from "path";
 import { app } from "electron";
+import { PROD_PATH } from "../global/index.js";
 
 /**
  * Check the current environment and
@@ -23,4 +24,8 @@ export const getPreloadPath = () => {
     DevMode() ? "." : "..",
     "/dist-electron/preload.cjs"
   );
+};
+
+export const getUIPath = () => {
+  return path.join(app.getAppPath(), PROD_PATH);
 };

@@ -1,3 +1,6 @@
+/**
+ * Resources
+ */
 type ResourcesStatistics = {
   cpu: number;
   ram: number;
@@ -16,11 +19,17 @@ type OSResources = {
   };
 };
 
+/**
+ * IPC Adapters
+ */
 type EventPayloadMapping = {
   statistics: ResourcesStatistics;
   getStaticData: OSResources;
 };
 
+/**
+ * Context Bridges
+ */
 interface Window {
   electron: {
     getStaticData: () => Promise<OSResources>;

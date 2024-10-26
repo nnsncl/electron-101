@@ -1,11 +1,10 @@
-import path from "path";
 import { app, BrowserWindow } from "electron";
 
-import { IPCMainHandler } from "./handlers/ipc-handlers.js";
-import { getPreloadPath, DevMode } from "./utils/index.js";
+import { IPCMainAdapter } from "./handlers/ipc-adapters.js";
+import { getPreloadPath, getUIPath, DevMode } from "./utils/index.js";
 import { getStaticData, pollResources } from "./services/get-resources.js";
 
-import { DEV_PATH, PROD_PATH, STATIC_DATA_EVENT_KEY } from "./global/index.js";
+import { DEV_PATH, STATIC_DATA_EVENT_KEY } from "./global/index.js";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -19,15 +18,13 @@ app.on("ready", () => {
    * Render the localhost client on dev mode,
    * on production mode, render the index.html generated after building the app
    */
-  DevMode()
-    ? mainWindow.loadURL(DEV_PATH)
-    : mainWindow.loadFile(path.join(app.getAppPath(), PROD_PATH));
+  DevMode() ? mainWindow.loadURL(DEV_PATH) : mainWindow.loadFile(getUIPath());
 
   /**
    * Run the IPC send function set to extract and transform the resources details,
-   * then, run the IPC handle function using the typesafe method IPCMainHandler to extract
+   * then, run the IPC handle function using the typesafe method IPCMainAdapter to extract
    * and transform static resources data
    */
   pollResources(mainWindow);
-  IPCMainHandler(STATIC_DATA_EVENT_KEY, () => getStaticData());
+  IPCMainAdapter(STATIC_DATA_EVENT_KEY, () => getStaticData());
 });

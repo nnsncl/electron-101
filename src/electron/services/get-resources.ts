@@ -2,7 +2,7 @@ import osUtils from "os-utils";
 import fs from "fs";
 import os from "os";
 import { BrowserWindow } from "electron";
-import { IPCSendHandler } from "../handlers/ipc-handlers.js";
+import { IPCSendAdapter } from "../handlers/ipc-adapters.js";
 import { POLL_INTERVAL_MS, STATS_EVENT_KEY } from "../global/index.js";
 
 export const getCPUUsage = (): Promise<number> => {
@@ -49,7 +49,7 @@ export const pollResources = (mainWindow: BrowserWindow) =>
     const storageUsage = getStorageData();
 
     // Send data to the IPC Event Bus
-    IPCSendHandler(STATS_EVENT_KEY, mainWindow.webContents, {
+    IPCSendAdapter(STATS_EVENT_KEY, mainWindow.webContents, {
       cpu: cpuUsage,
       ram: ramUsage,
       storage: storageUsage,
