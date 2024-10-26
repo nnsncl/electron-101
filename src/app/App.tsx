@@ -1,5 +1,4 @@
 import React from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 const HAS_ELECTRON_BRIDGE = Boolean(window?.electron);
@@ -35,12 +34,12 @@ function App() {
 
   return (
     <section>
-      <div>
+      {/* <div>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Vite + React</h1> */}
       {HAS_ELECTRON_BRIDGE && (
         <div>
           <p>CPU usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
