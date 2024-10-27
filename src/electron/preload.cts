@@ -29,6 +29,8 @@ const IPCOnHandler = <Key extends keyof EventPayloadMapping>(
  */
 electron.contextBridge.exposeInMainWorld("electron", {
   getStaticData: () => IPCInvoke("getStaticData"),
+  subscribeChangeView: (callback) =>
+    IPCOnHandler("changeView", (view) => callback(view)),
   subscribeStatistics: (callback) =>
     IPCOnHandler("statistics", (stats) => callback(stats)),
 } satisfies Window["electron"]);

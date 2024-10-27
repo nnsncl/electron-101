@@ -4,6 +4,7 @@ import "./App.css";
 const HAS_ELECTRON_BRIDGE = Boolean(window?.electron);
 
 function App() {
+  const [currentView, setCurrentView] = React.useState<View>("Performances");
   const [deviceStaticDetails, setDeviceStaticDetails] =
     React.useState<OSResources | null>(null);
 
@@ -32,6 +33,13 @@ function App() {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (HAS_ELECTRON_BRIDGE) {
+      return window.electron.subscribeChangeView((view) =>
+        setCurrentView(view)
+      );
+    }
+  }, []);
   return (
     <section>
       {/* <div>
@@ -42,14 +50,28 @@ function App() {
       <h1>Vite + React</h1> */}
       {HAS_ELECTRON_BRIDGE && (
         <div>
-          <p>CPU usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
-          <p>CPU model:&nbsp;{deviceStaticDetails?.cpu_model}</p>
-          <p>RAM usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
-          <p>
-            Storage usage:&nbsp;{deferredAppStats?.storage?.usage.toFixed(2)}%
-          </p>
-          <p>Storage capacity:&nbsp;{deferredAppStats?.storage?.total}Gb</p>
-          <p>Memory capacity:&nbsp;{deviceStaticDetails?.total_memory?.gb}Gb</p>
+          {currentView === "Performances" && (
+            <React.Fragment>
+              <p>Storage capacity:&nbsp;{deferredAppStats?.storage?.total}Gb</p>
+              <p>
+                Memory capacity:&nbsp;{deviceStaticDetails?.total_memory?.gb}Gb
+              </p>
+            </React.Fragment>
+          )}
+          {["Performances", "CPU"].includes(currentView) && (
+            <React.Fragment>
+              <p>CPU usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
+              <p>CPU model:&nbsp;{deviceStaticDetails?.cpu_model}</p>
+            </React.Fragment>
+          )}
+          {["Performances", "RAM"].includes(currentView) && (
+            <p>RAM usage:&nbsp;{deferredAppStats?.cpu.toFixed(2)}%</p>
+          )}
+          {["Performances", "Storage"].includes(currentView) && (
+            <p>
+              Storage usage:&nbsp;{deferredAppStats?.storage?.usage.toFixed(2)}%
+            </p>
+          )}
         </div>
       )}
     </section>

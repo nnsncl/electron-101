@@ -1,5 +1,6 @@
 import { BrowserWindow, Menu, app } from "electron";
 import { DevMode } from "../utils/index.js";
+import { IPCSendAdapter } from "../handlers/ipc-adapters.js";
 
 export const createMenu = (mainWindow: BrowserWindow) => {
   const appName = app.getName();
@@ -23,6 +24,12 @@ export const createMenu = (mainWindow: BrowserWindow) => {
       type: "submenu",
       submenu: [
         {
+          label: "Go to main view",
+          click: () =>
+            IPCSendAdapter("changeView", mainWindow.webContents, "CPU"),
+        },
+        { type: "separator" },
+        {
           label: "Open view...",
           click: () => {
             mainWindow.show();
@@ -39,12 +46,38 @@ export const createMenu = (mainWindow: BrowserWindow) => {
             { label: "Center View", click: () => mainWindow.center() },
           ],
         },
+        { type: "separator" },
+        {
+          label: "Reports",
+          type: "submenu",
+          submenu: [
+            {
+              label: "Performances",
+              click: () =>
+                IPCSendAdapter(
+                  "changeView",
+                  mainWindow.webContents,
+                  "Performances"
+                ),
+            },
+            {
+              label: "CPU usage",
+              click: () =>
+                IPCSendAdapter("changeView", mainWindow.webContents, "CPU"),
+            },
+            {
+              label: "RAM usage",
+              click: () =>
+                IPCSendAdapter("changeView", mainWindow.webContents, "RAM"),
+            },
+            {
+              label: "Storage",
+              click: () =>
+                IPCSendAdapter("changeView", mainWindow.webContents, "Storage"),
+            },
+          ],
+        },
       ],
-    },
-    {
-      label: "Performances",
-      type: "submenu",
-      submenu: [{ label: "CPU" }, { label: "RAM" }, { label: "Storage" }],
     },
   ]);
 
