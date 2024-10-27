@@ -46,7 +46,7 @@ export const createTray = (mainWindow: BrowserWindow) => {
 
   const menu = Menu.buildFromTemplate([
     {
-      label: "Open main window",
+      label: "Open main window...",
       click: () => {
         mainWindow.show();
         if (app.dock) app.dock.show(); // macOS

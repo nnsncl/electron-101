@@ -6,6 +6,7 @@ import { getStaticData, pollResources } from "./services/get-resources.js";
 
 import { DEV_PATH, STATIC_DATA_EVENT_KEY } from "./global/index.js";
 import { createTray, closeEventHandler } from "./services/trays.js";
+import { createMenu } from "./services/menus.js";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -33,5 +34,14 @@ app.on("ready", () => {
    * Tray configuration
    */
   createTray(mainWindow);
+
+  /**
+   * App Menu configuration
+   */
+  createMenu(mainWindow);
+
+  /**
+   * App controls
+   */
   closeEventHandler(mainWindow);
 });
