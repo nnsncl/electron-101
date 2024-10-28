@@ -1,10 +1,11 @@
 import React from "react";
-import "./App.css";
 
 const HAS_ELECTRON_BRIDGE = Boolean(window?.electron);
 
 function App() {
-  const [currentView, setCurrentView] = React.useState<View>("Performances");
+  const [currentView, setCurrentView] = React.useState<View | null>(
+    "Performances"
+  );
   const [deviceStaticDetails, setDeviceStaticDetails] =
     React.useState<OSResources | null>(null);
 
@@ -12,42 +13,40 @@ function App() {
     React.useState<ResourcesStatistics | null>(null);
   const deferredAppStats = React.useDeferredValue(applicationStats);
 
-  React.useEffect(() => {
-    if (HAS_ELECTRON_BRIDGE) {
-      /**
-       * subscribeStatistics returns an unsub function after the callback is executed
-       * Since useEffect fires every time an items of its deps array has changed and at every
-       * render, this function will sub -> unsub to the corresponding events automatically
-       */
+  if (HAS_ELECTRON_BRIDGE) {
+    React.useEffect(() => {
+      if (HAS_ELECTRON_BRIDGE) {
+        /**
+         * subscribeStatistics returns an unsub function after the callback is executed
+         * Since useEffect fires every time an items of its deps array has changed and at every
+         * render, this function will sub -> unsub to the corresponding events automatically
+         */
 
-      const fireThenUnsubGetStats = window?.electron.subscribeStatistics(
-        (stats) => setApplicationStats(stats)
-      );
-      if (typeof deviceStaticDetails === typeof null) {
-        window?.electron
-          .getStaticData()
-          .then((value) => setDeviceStaticDetails(value));
+        const fireThenUnsubGetStats = window?.electron.subscribeStatistics(
+          (stats) => setApplicationStats(stats)
+        );
+        if (typeof deviceStaticDetails === typeof null) {
+          window?.electron
+            .getStaticData()
+            .then((value) => setDeviceStaticDetails(value));
+        }
+
+        return fireThenUnsubGetStats;
       }
+    }, []);
 
-      return fireThenUnsubGetStats;
-    }
-  }, []);
+    React.useEffect(() => {
+      if (HAS_ELECTRON_BRIDGE) {
+        return window.electron.subscribeChangeView((view) =>
+          setCurrentView(view)
+        );
+      } else setCurrentView(null);
+    }, []);
+  }
 
-  React.useEffect(() => {
-    if (HAS_ELECTRON_BRIDGE) {
-      return window.electron.subscribeChangeView((view) =>
-        setCurrentView(view)
-      );
-    }
-  }, []);
   return (
     <section>
-      {/* <div>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1> */}
+      <h1>Electron 101</h1>
       {HAS_ELECTRON_BRIDGE && (
         <div>
           {currentView === "Performances" && (
