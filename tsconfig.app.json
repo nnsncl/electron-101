@@ -25,6 +25,6 @@
     /* Types */
     "types": ["./types.d.ts"]
   },
-  "include": ["src"],
+  "include": ["src", "__tests__"],
   "exclude": ["src/electron"]
 }

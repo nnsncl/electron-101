@@ -3,6 +3,21 @@ import { test, expect, _electron } from "@playwright/test";
 let ElectronApp: Awaited<ReturnType<typeof _electron.launch>>;
 let MainElectronWindow: Awaited<ReturnType<typeof ElectronApp.firstWindow>>;
 
+const APP_ROUTES = {
+  main: ["Default", "Views"],
+  default: ["DevTools", "Separator", "Quit"],
+  views: [
+    "MainView",
+    "Separator",
+    "OpenView",
+    "HideView",
+    "Separator",
+    "Appearances",
+    "Separator",
+    "Reports",
+  ],
+};
+
 /**
  * Mock preload script behavior on test executions
  * Checks every 100ms if the app in monted; once it is, tests can be run safely,
@@ -54,25 +69,11 @@ test("App's Custom Menus are created", async () => {
 
   const defaultMenu = appMenu?.items[0];
   const viewMenu = appMenu?.items[1];
-  const menuRoutes = {
-    main: ["Default", "Views"],
-    default: ["DevTools", "Separator", "Quit"],
-    views: [
-      "MainView",
-      "Separator",
-      "OpenView",
-      "HideView",
-      "Separator",
-      "Appearances",
-      "Separator",
-      "Reports",
-    ],
-  };
 
   expect(defaultMenu?.label).toBe("");
   expect(viewMenu?.label).toBe("View");
 
-  expect(appMenu?.items.length).toBe(menuRoutes.main.length);
-  expect(defaultMenu?.submenu?.items.length).toBe(menuRoutes.default.length);
-  expect(viewMenu?.submenu?.items.length).toBe(menuRoutes.views.length);
+  expect(appMenu?.items.length).toBe(APP_ROUTES.main.length);
+  expect(defaultMenu?.submenu?.items.length).toBe(APP_ROUTES.default.length);
+  expect(viewMenu?.submenu?.items.length).toBe(APP_ROUTES.views.length);
 });
